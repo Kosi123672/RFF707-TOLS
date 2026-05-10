@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>RFF707 TOOLS | AI Assistant + 30 Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            padding-bottom: 60px;
+        }
+        .header {
+            background: white;
+            padding: 20px 24px;
+            text-align: center;
+            border-bottom: 1px solid #e8ecf0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header h1 i {
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #4f46e5;
+        }
+        .header p {
+            color: #6c757d;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+        .search-box {
+            margin-top: 14px;
+            background: #f8f9fc;
+            border-radius: 40px;
+            padding: 10px 18px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid #e8ecf0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            flex: 1;
+            outline: none;
+            font-size: 0.85rem;
+        }
+        .search-box i {
+            color: #94a3b8;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .tool-btn {
+            background: white;
+            border: 1px solid #e8ecf0;
+            border-radius: 20px;
+            padding: 10px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .tool-btn i {
+            font-size: 1.2rem;
+            color: #4f46e5;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .tool-btn span {
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #334155;
+        }
+        .tool-btn.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+        }
+        .tool-btn.active i, .tool-btn.active span {
+            color: white;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tool-panel {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+        }
+        .tool-panel.active-panel {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1e293b;
+        }
+        .panel-title i {
+            color: #4f46e5;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+        }
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #4338ca;
+            transform: scale(0.98);
+        }
+        .result-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 20px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            border: 1px solid #e2e8f0;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .social-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .social-input-group i {
+            width: 30px;
+            font-size: 1.2rem;
+            color: #4f46e5;
+        }
+        .project-item {
+            background: #f8fafc;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            border-top: 1px solid #e8ecf0;
+            margin-top: 20px;
+        }
+        .rff707-badge {
+            display: inline-block;
+            background: #f0f0ff;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            color: #4f46e5;
+            margin-top: 8px;
+        }
+        
+        /* ========== AI ASSISTANT BOT STYLES ========== */
+        .ai-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .ai-button {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(79,70,229,0.4);
+            transition: all 0.3s;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+        }
+        .ai-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(79,70,229,0.5);
+        }
+        .ai-chat {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e8ecf0;
+            animation: slideUp 0.3s ease;
+        }
+        .ai-chat.open {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .ai-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            padding: 16px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ai-header h3 {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-header i {
+            font-size: 1.2rem;
+        }
+        .close-bot {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: auto;
+            padding: 0;
+            margin: 0;
+        }
+        .ai-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8fafc;
+        }
+        .message {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .bot-message {
+            background: white;
+            color: #1e293b;
+            align-self: flex-start;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+        }
+        .user-message {
+            background: #4f46e5;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .ai-input-area {
+            display: flex;
+            padding: 12px;
+            background: white;
+            border-top: 1px solid #e8ecf0;
+            gap: 8px;
+        }
+        .ai-input-area input {
+            flex: 1;
+            margin: 0;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+        }
+        .ai-input-area button {
+            width: auto;
+            padding: 10px 16px;
+            margin: 0;
+            background: #4f46e5;
+        }
+        .typing {
+            color: #94a3b8;
+            font-size: 0.7rem;
+            padding: 8px 12px;
+        }
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px;
+            background: #f1f5f9;
+        }
+        .chip {
+            background: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+        .chip:hover {
+            background: #4f46e5;
+            color: white;
+        }
+        .wa-escalate {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            margin-top: 8px;
+            text-align: center;
+        }
+        .wa-escalate a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        @media (max-width: 550px) {
+            .ai-chat { width: 300px; right: -10px; }
+            .tools-grid { gap: 8px; }
+            .tool-btn i { font-size: 1rem; }
+            .tool-btn span { font-size: 0.55rem; }
+            .tool-panel { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1><i class="fas fa-robot"></i> RFF707 TOOLS</h1>
+    <p>Portfolio Generator | 30+ Tools | AI Assistant Available</p>
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchTool" placeholder="Cari tools...">
+    </div>
+</div>
+
+<div class="tools-grid" id="toolsGrid"></div>
+<div class="container" id="panelContainer"></div>
+<footer>
+    <i class="fas fa-microchip"></i> RFF707 ASI Tools | All Tools Work | Free Forever
+    <div class="rff707-badge"><i class="fas fa-crown"></i> Powered by RFF707 Super Intelligence</div>
+</footer>
+
+<!-- AI ASSISTANT BOT -->
+<div class="ai-assistant">
+    <div class="ai-button" id="aiButton">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div class="ai-chat" id="aiChat">
+        <div class="ai-header">
+            <h3><i class="fas fa-microchip"></i> RFF707 AI Assistant</h3>
+            <button class="close-bot" id="closeBot"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+            <div class="message bot-message">
+                <i class="fas fa-robot" style="margin-right:6px;"></i> Halo! Saya RFF707 AI Assistant. Ada yang bisa saya bantu? 🚀
+            </div>
+        </div>
+        <div class="suggestion-chips" id="suggestionChips">
+            <div class="chip">Cara pakai tools?</div>
+            <div class="chip">Portfolio generator?</div>
+            <div class="chip">Tools rusak?</div>
+            <div class="chip">Hubungi admin</div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="aiInput" placeholder="Tanya RFF707 AI..." autocomplete="off">
+            <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== ANTI INSPECT ====================
+    document.addEventListener('keydown', function(e) {
+        if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 's')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    if(typeof console !== 'undefined') {
+        console.log = console.info = console.warn = console.debug = console.error = function() {};
+    }
+    // ==================== END ANTI INSPECT ====================
+
+    // ==================== AI ASSISTANT BOT ====================
+    const aiButton = document.getElementById('aiButton');
+    const aiChat = document.getElementById('aiChat');
+    const closeBot = document.getElementById('closeBot');
+    const aiMessages = document.getElementById('aiMessages');
+    const aiInput = document.getElementById('aiInput');
+    const sendBtn = document.getElementById('sendMessage');
+    
+    // WhatsApp number KING
+    const WA_NUMBER = "6281348385122";
+    const WA_LINK = `https://wa.me/${WA_NUMBER}`;
+    
+    let isTyping = false;
+    let unsolvedCount = 0;
+    
+    aiButton.addEventListener('click', () => {
+        aiChat.classList.toggle('open');
+    });
+    closeBot.addEventListener('click', () => {
+        aiChat.classList.remove('open');
+    });
+    
+    function addMessage(text, isUser = false, isEscalate = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        if(!isUser) {
+            if(isEscalate) {
+                msgDiv.innerHTML = `<i class="fas fa-headset" style="margin-right:6px;"></i> ${text}`;
+            } else {
+                msgDiv.innerHTML = `<i class="fas fa-robot" style="margin-right:6px;"></i> ${text}`;
+            }
+        } else {
+            msgDiv.innerHTML = text;
+        }
+        aiMessages.appendChild(msgDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+        return msgDiv;
+    }
+    
+    function showTyping() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'typing';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = '<i class="fas fa-microchip"></i> RFF707 is thinking...';
+        aiMessages.appendChild(typingDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+    
+    function hideTyping() {
+        const typing = document.getElementById('typingIndicator');
+        if(typing) typing.remove();
+    }
+    
+    function showEscalateToWA() {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message bot-message wa-escalate';
+        msgDiv.innerHTML = `
+            <i class="fas fa-headset" style="margin-right:6px;"></i> Maaf, masalah Anda belum terselesaikan.<br><br>
+            Silakan hubungi tim support RFF707 langsung via WhatsApp untuk bantuan lebih lanjut:<br><br>
+            <a href="${WA_LINK}" target="_blank" style="background:#25D366; color:white; padding:8px 16px; border-radius:40px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; margin-top:8px;">
+                <i class="fab fa-whatsapp"></i> Hubungi RFF707 Support
+            </a>
+        `;
+        aiMessages.appendChild(msgDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+    
+    async function getAIResponse(userMessage) {
+        const lowerMsg = userMessage.toLowerCase();
+        
+        // Reset unsolved counter jika pertanyaan baru berbeda jenis
+        if(!lowerMsg.includes('error') && !lowerMsg.includes('rusak') && !lowerMsg.includes('trouble') && !lowerMsg.includes('gagal') && !lowerMsg.includes('not working')) {
+            unsolvedCount = 0;
+        }
+        
+        // FAQ Knowledge Base
+        if(lowerMsg.includes('cara pakai') || lowerMsg.includes('how to use') || lowerMsg.includes('gimana caranya')) {
+            unsolvedCount = 0;
+            return "📌 *Cara Menggunakan RFF707 Tools:*\n\n1. Pilih tools yang diinginkan dari menu di atas\n2. Isi data yang diperlukan\n3. Klik tombol Generate/Process\n4. Hasil akan muncul di bawah\n\n💡 Untuk Portfolio Generator: isi nama, bio, foto, project, lalu klik Generate. Bisa download hasilnya sebagai file HTML.\n\n✅ Jika masih bingung, ketik 'hubungi admin' untuk bantuan langsung.";
+        }
+        else if(lowerMsg.includes('portfolio') || lowerMsg.includes('portofolio')) {
+            unsolvedCount = 0;
+            return "🎨 *Portfolio Generator RFF707:*\n\nFitur untuk membuat website portfolio profesional!\n\nLangkah:\n• Isi nama, jabatan, bio\n• Upload foto profil (opsional)\n• Tambahkan link media sosial\n• Tambahkan project dengan link\n• Klik Generate Portfolio\n• Preview & download HTML\n\nHasilnya website modern dengan email & footer lengkap!";
+        }
+        else if(lowerMsg.includes('error') || lowerMsg.includes('rusak') || lowerMsg.includes('trouble') || lowerMsg.includes('not working') || lowerMsg.includes('gagal')) {
+            unsolvedCount++;
+            
+            if(unsolvedCount >= 2) {
+                // Setelah 2 kali lapor error, arahkan ke WA
+                showEscalateToWA();
+                return null;
+            } else {
+                return "⚠️ *Troubleshooting:*\n\nJika tools tidak berfungsi:\n1. Refresh halaman (Ctrl+R)\n2. Pastikan koneksi internet stabil\n3. Coba gunakan browser Chrome/Edge terbaru\n4. Hapus cache browser\n\n🔧 Masih bermasalah? Ketik 'error' lagi nanti akan saya arahkan ke tim support RFF707.";
+            }
+        }
+        else if(lowerMsg.includes('tools apa') || lowerMsg.includes('fitur')) {
+            unsolvedCount = 0;
+            return "🛠️ *Daftar Tools RFF707:*\n\n• Portfolio Generator - Bikin website portfolio\n• Kalkulator - Hitung matematika\n• QR Code - Buat QR dari teks/link\n• Password Generator - Buat password aman\n• Base64 - Encode/decode teks\n• SHA256 Hash - Hash keamanan\n• Word Counter - Hitung kata\n• Color Picker - Pilih warna\n• Random Number - Angka acak\n• Timer - Countdown\n• Catatan - Simpan teks\n• IP Info - Cek IP publik\n• Cuaca - Info cuaca realtime\n• Mata Uang - Kurs terkini\n• To-Do List - Manajemen tugas\n• BMI - Kalkulator berat badan\n• Hitung Umur - Kalkulator usia\n• Stopwatch - Pencatat waktu\n\nSemua tools GRATIS dan WORK!";
+        }
+        else if(lowerMsg.includes('harga') || lowerMsg.includes('bayar') || lowerMsg.includes('premium')) {
+            unsolvedCount = 0;
+            return "💎 *RFF707 Tools se
