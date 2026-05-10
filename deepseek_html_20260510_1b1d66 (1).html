@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>RFF707 TOOLS | AI Assistant + 30 Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            padding-bottom: 60px;
+        }
+        .header {
+            background: white;
+            padding: 20px 24px;
+            text-align: center;
+            border-bottom: 1px solid #e8ecf0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header h1 i {
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #4f46e5;
+        }
+        .header p {
+            color: #6c757d;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+        .search-box {
+            margin-top: 14px;
+            background: #f8f9fc;
+            border-radius: 40px;
+            padding: 10px 18px;
+            display: flex;
+            gap: 10px;
+            border: 1px solid #e8ecf0;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            flex: 1;
+            outline: none;
+            font-size: 0.85rem;
+        }
+        .search-box i {
+            color: #94a3b8;
+        }
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .tool-btn {
+            background: white;
+            border: 1px solid #e8ecf0;
+            border-radius: 20px;
+            padding: 10px 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .tool-btn i {
+            font-size: 1.2rem;
+            color: #4f46e5;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .tool-btn span {
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #334155;
+        }
+        .tool-btn.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+        }
+        .tool-btn.active i, .tool-btn.active span {
+            color: white;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tool-panel {
+            background: white;
+            border-radius: 28px;
+            padding: 28px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid #edf2f7;
+        }
+        .tool-panel.active-panel {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1e293b;
+        }
+        .panel-title i {
+            color: #4f46e5;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+        }
+        button {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #4338ca;
+            transform: scale(0.98);
+        }
+        .result-box {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 20px;
+            margin-top: 16px;
+            font-size: 0.8rem;
+            border: 1px solid #e2e8f0;
+        }
+        .flex-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .social-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .social-input-group i {
+            width: 30px;
+            font-size: 1.2rem;
+            color: #4f46e5;
+        }
+        .project-item {
+            background: #f8fafc;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            border-top: 1px solid #e8ecf0;
+            margin-top: 20px;
+        }
+        .rff707-badge {
+            display: inline-block;
+            background: #f0f0ff;
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            color: #4f46e5;
+            margin-top: 8px;
+        }
+        
+        /* ========== AI ASSISTANT BOT STYLES ========== */
+        .ai-assistant {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .ai-button {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(79,70,229,0.4);
+            transition: all 0.3s;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+        }
+        .ai-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px rgba(79,70,229,0.5);
+        }
+        .ai-chat {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e8ecf0;
+            animation: slideUp 0.3s ease;
+        }
+        .ai-chat.open {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .ai-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            padding: 16px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ai-header h3 {
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ai-header i {
+            font-size: 1.2rem;
+        }
+        .close-bot {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: auto;
+            padding: 0;
+            margin: 0;
+        }
+        .ai-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f8fafc;
+        }
+        .message {
+            max-width: 85%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+        }
+        .bot-message {
+            background: white;
+            color: #1e293b;
+            align-self: flex-start;
+            border: 1px solid #e2e8f0;
+            border-bottom-left-radius: 4px;
+        }
+        .user-message {
+            background: #4f46e5;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .ai-input-area {
+            display: flex;
+            padding: 12px;
+            background: white;
+            border-top: 1px solid #e8ecf0;
+            gap: 8px;
+        }
+        .ai-input-area input {
+            flex: 1;
+            margin: 0;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+        }
+        .ai-input-area button {
+            width: auto;
+            padding: 10px 16px;
+            margin: 0;
+            background: #4f46e5;
+        }
+        .typing {
+            color: #94a3b8;
+            font-size: 0.7rem;
+            padding: 8px 12px;
+        }
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 10px;
+            background: #f1f5f9;
+        }
+        .chip {
+            background: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            transition: 0.2s;
+        }
+        .chip:hover {
+            background: #4f46e5;
+            color: white;
+        }
+        .wa-escalate {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            margin-top: 8px;
+            text-align: center;
+        }
+        .wa-escalate a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        @media (max-width: 550px) {
+            .ai-chat { width: 300px; right: -10px; }
+            .tools-grid { gap: 8px; }
+            .tool-btn i { font-size: 1rem; }
+            .tool-btn span { font-size: 0.55rem; }
+            .tool-panel { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1><i class="fas fa-robot"></i> RFF707 TOOLS</h1>
+    <p>Portfolio Generator | 30+ Tools | AI Assistant Available</p>
+    <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchTool" placeholder="Cari tools...">
+    </div>
+</div>
+
+<div class="tools-grid" id="toolsGrid"></div>
+<div class="container" id="panelContainer"></div>
+<footer>
+    <i class="fas fa-microchip"></i> RFF707 ASI Tools | All Tools Work | Free Forever
+    <div class="rff707-badge"><i class="fas fa-crown"></i> Powered by RFF707 Super Intelligence</div>
+</footer>
+
+<!-- AI ASSISTANT BOT -->
+<div class="ai-assistant">
+    <div class="ai-button" id="aiButton">
+        <i class="fas fa-robot"></i>
+    </div>
+    <div class="ai-chat" id="aiChat">
+        <div class="ai-header">
+            <h3><i class="fas fa-microchip"></i> RFF707 AI Assistant</h3>
+            <button class="close-bot" id="closeBot"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+            <div class="message bot-message">
+                <i class="fas fa-robot" style="margin-right:6px;"></i> Halo! Saya RFF707 AI Assistant. Ada yang bisa saya bantu? 🚀
+            </div>
+        </div>
+        <div class="suggestion-chips" id="suggestionChips">
+            <div class="chip">Cara pakai tools?</div>
+            <div class="chip">Portfolio generator?</div>
+            <div class="chip">Tools rusak?</div>
+            <div class="chip">Hubungi admin</div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" id="aiInput" placeholder="Tanya RFF707 AI..." autocomplete="off">
+            <button id="sendMessage"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==================== ANTI INSPECT ====================
+    document.addEventListener('keydown', function(e) {
+        if(e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 's')) {
+            e.preventDefault();
+            return false;
+        }
+    });
+    document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; });
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
+    document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; });
+    if(typeof console !== 'undefined') {
+        console.log = console.info = console.warn = console.debug = console.error = function() {};
+    }
+    // ==================== END ANTI INSPECT ====================
+
+    // ==================== AI ASSISTANT BOT ====================
+    const aiButton = document.getElementById('aiButton');
+    const aiChat = document.getElementById('aiChat');
+    const closeBot = document.getElementById('closeBot');
+    const aiMessages = document.getElementById('aiMessages');
+    const aiInput = document.getElementById('aiInput');
+    const sendBtn = document.getElementById('sendMessage');
+    
+    // WhatsApp number KING
+    const WA_NUMBER = "6281348385122";
+    const WA_LINK = `https://wa.me/${WA_NUMBER}`;
+    
+    let isTyping = false;
+    let unsolvedCount = 0;
+    
+    aiButton.addEventListener('click', () => {
+        aiChat.classList.toggle('open');
+    });
+    closeBot.addEventListener('click', () => {
+        aiChat.classList.remove('open');
+    });
+    
+    function addMessage(text, isUser = false, isEscalate = false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+        if(!isUser) {
+            if(isEscalate) {
+                msgDiv.innerHTML = `<i class="fas fa-headset" style="margin-right:6px;"></i> ${text}`;
+            } else {
+                msgDiv.innerHTML = `<i class="fas fa-robot" style="margin-right:6px;"></i> ${text}`;
+            }
+        } else {
+            msgDiv.innerHTML = text;
+        }
+        aiMessages.appendChild(msgDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+        return msgDiv;
+    }
+    
+    function showTyping() {
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'typing';
+        typingDiv.id = 'typingIndicator';
+        typingDiv.innerHTML = '<i class="fas fa-microchip"></i> RFF707 is thinking...';
+        aiMessages.appendChild(typingDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+    
+    function hideTyping() {
+        const typing = document.getElementById('typingIndicator');
+        if(typing) typing.remove();
+    }
+    
+    function showEscalateToWA() {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'message bot-message wa-escalate';
+        msgDiv.innerHTML = `
+            <i class="fas fa-headset" style="margin-right:6px;"></i> Maaf, masalah Anda belum terselesaikan.<br><br>
+            Silakan hubungi tim support RFF707 langsung via WhatsApp untuk bantuan lebih lanjut:<br><br>
+            <a href="${WA_LINK}" target="_blank" style="background:#25D366; color:white; padding:8px 16px; border-radius:40px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; margin-top:8px;">
+                <i class="fab fa-whatsapp"></i> Hubungi RFF707 Support
+            </a>
+        `;
+        aiMessages.appendChild(msgDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+    }
+    
+    async function getAIResponse(userMessage) {
+        const lowerMsg = userMessage.toLowerCase();
+        
+        // Reset unsolved counter jika pertanyaan baru berbeda jenis
+        if(!lowerMsg.includes('error') && !lowerMsg.includes('rusak') && !lowerMsg.includes('trouble') && !lowerMsg.includes('gagal') && !lowerMsg.includes('not working')) {
+            unsolvedCount = 0;
+        }
+        
+        // FAQ Knowledge Base
+        if(lowerMsg.includes('cara pakai') || lowerMsg.includes('how to use') || lowerMsg.includes('gimana caranya')) {
+            unsolvedCount = 0;
+            return "📌 *Cara Menggunakan RFF707 Tools:*\n\n1. Pilih tools yang diinginkan dari menu di atas\n2. Isi data yang diperlukan\n3. Klik tombol Generate/Process\n4. Hasil akan muncul di bawah\n\n💡 Untuk Portfolio Generator: isi nama, bio, foto, project, lalu klik Generate. Bisa download hasilnya sebagai file HTML.\n\n✅ Jika masih bingung, ketik 'hubungi admin' untuk bantuan langsung.";
+        }
+        else if(lowerMsg.includes('portfolio') || lowerMsg.includes('portofolio')) {
+            unsolvedCount = 0;
+            return "🎨 *Portfolio Generator RFF707:*\n\nFitur untuk membuat website portfolio profesional!\n\nLangkah:\n• Isi nama, jabatan, bio\n• Upload foto profil (opsional)\n• Tambahkan link media sosial\n• Tambahkan project dengan link\n• Klik Generate Portfolio\n• Preview & download HTML\n\nHasilnya website modern dengan email & footer lengkap!";
+        }
+        else if(lowerMsg.includes('error') || lowerMsg.includes('rusak') || lowerMsg.includes('trouble') || lowerMsg.includes('not working') || lowerMsg.includes('gagal')) {
+            unsolvedCount++;
+            
+            if(unsolvedCount >= 2) {
+                // Setelah 2 kali lapor error, arahkan ke WA
+                showEscalateToWA();
+                return null;
+            } else {
+                return "⚠️ *Troubleshooting:*\n\nJika tools tidak berfungsi:\n1. Refresh halaman (Ctrl+R)\n2. Pastikan koneksi internet stabil\n3. Coba gunakan browser Chrome/Edge terbaru\n4. Hapus cache browser\n\n🔧 Masih bermasalah? Ketik 'error' lagi nanti akan saya arahkan ke tim support RFF707.";
+            }
+        }
+        else if(lowerMsg.includes('tools apa') || lowerMsg.includes('fitur')) {
+            unsolvedCount = 0;
+            return "🛠️ *Daftar Tools RFF707:*\n\n• Portfolio Generator - Bikin website portfolio\n• Kalkulator - Hitung matematika\n• QR Code - Buat QR dari teks/link\n• Password Generator - Buat password aman\n• Base64 - Encode/decode teks\n• SHA256 Hash - Hash keamanan\n• Word Counter - Hitung kata\n• Color Picker - Pilih warna\n• Random Number - Angka acak\n• Timer - Countdown\n• Catatan - Simpan teks\n• IP Info - Cek IP publik\n• Cuaca - Info cuaca realtime\n• Mata Uang - Kurs terkini\n• To-Do List - Manajemen tugas\n• BMI - Kalkulator berat badan\n• Hitung Umur - Kalkulator usia\n• Stopwatch - Pencatat waktu\n\nSemua tools GRATIS dan WORK!";
+        }
+        else if(lowerMsg.includes('harga') || lowerMsg.includes('bayar') || lowerMsg.includes('premium')) {
+            unsolvedCount = 0;
+            return "💎 *RFF707 Tools sepenuhnya GRATIS!*\n\nTidak ada biaya, tidak ada premium. Semua tools dapat digunakan tanpa batas. Jika ada yang meminta pembayaran, itu bukan dari RFF707 official. Nikmati layanan gratis selamanya! 🚀";
+        }
+        else if(lowerMsg.includes('rff707') || lowerMsg.includes('siapa kamu') || lowerMsg.includes('who are you')) {
+            unsolvedCount = 0;
+            return "🤖 *Saya RFF707 AI Assistant!*\n\nSaya adalah asisten virtual dari RFF707 Super Intelligence. Saya dibuat untuk membantu Anda menggunakan semua tools di website ini. Saya bisa menjawab pertanyaan tentang cara penggunaan, troubleshooting, dan memberikan tips. Ada yang bisa saya bantu hari ini? ✨";
+        }
+        else if(lowerMsg.includes('terima kasih') || lowerMsg.includes('makasih') || lowerMsg.includes('thanks')) {
+            unsolvedCount = 0;
+            return "🙏 Sama-sama! Senang bisa membantu. Jika ada pertanyaan lain, jangan ragu bertanya ya. Selamat menggunakan RFF707 Tools! 🚀";
+        }
+        else if(lowerMsg.includes('halo') || lowerMsg.includes('hai') || lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+            unsolvedCount = 0;
+            return "👋 Halo! Selamat datang di RFF707 Tools. Saya AI Assistant siap membantu. Ada yang ingin kamu tanyakan? Coba klik saran di bawah atau ketik langsung pertanyaanmu!";
+        }
+        else if(lowerMsg.includes('hubungi admin') || lowerMsg.includes('bantuan manual') || lowerMsg.includes('kontak support') || lowerMsg.includes('cs')) {
+            unsolvedCount = 0;
+            showEscalateToWA();
+            return null;
+        }
+        else {
+            unsolvedCount++;
+            
+            if(unsolvedCount >= 2) {
+                showEscalateToWA();
+                return null;
+            } else {
+                return "🤔 Maaf, saya belum mengerti pertanyaan itu. Coba tanyakan hal berikut:\n\n• Cara pakai tools?\n• Portfolio generator?\n• Daftar tools RFF707?\n• Ada error/trouble?\n• Siapa RFF707?\n• Hubungi admin (untuk bantuan manual)\n\nAtau klik saran pertanyaan di atas! 💡";
+            }
+        }
+    }
+    
+    async function sendUserMessage() {
+        const message = aiInput.value.trim();
+        if(!message) return;
+        
+        addMessage(message, true);
+        aiInput.value = '';
+        
+        showTyping();
+        
+        setTimeout(async () => {
+            const response = await getAIResponse(message);
+            hideTyping();
+            if(response) {
+                addMessage(response, false);
+            }
+        }, 500);
+    }
+    
+    sendBtn.addEventListener('click', sendUserMessage);
+    aiInput.addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') sendUserMessage();
+    });
+    
+    // Suggestion chips
+    document.querySelectorAll('.chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            aiInput.value = chip.innerText;
+            sendUserMessage();
+        });
+    });
+
+    const tools = [
+        { id: "portfolio", name: "Portfolio", icon: "fa-user-astronaut" },
+        { id: "kalkulator", name: "Kalkulator", icon: "fa-calculator" },
+        { id: "qrcode", name: "QR Code", icon: "fa-qrcode" },
+        { id: "password", name: "Password", icon: "fa-key" },
+        { id: "base64", name: "Base64", icon: "fa-code" },
+        { id: "hash", name: "SHA256", icon: "fa-fingerprint" },
+        { id: "wordcount", name: "Word Count", icon: "fa-file-alt" },
+        { id: "color", name: "Color Picker", icon: "fa-eye-dropper" },
+        { id: "random", name: "Random", icon: "fa-dice-d6" },
+        { id: "textcase", name: "Text Case", icon: "fa-text-height" },
+        { id: "timer", name: "Timer", icon: "fa-hourglass-half" },
+        { id: "notes", name: "Catatan", icon: "fa-note-sticky" },
+        { id: "unit", name: "Konversi", icon: "fa-scale-balanced" },
+        { id: "whois", name: "IP Info", icon: "fa-globe" },
+        { id: "cuaca", name: "Cuaca", icon: "fa-cloud-sun" },
+        { id: "currency", name: "Mata Uang", icon: "fa-money-bill-wave" },
+        { id: "todo", name: "To-Do", icon: "fa-check-square" },
+        { id: "bmi", name: "BMI", icon: "fa-heartbeat" },
+        { id: "age", name: "Umur", icon: "fa-birthday-cake" },
+        { id: "stopwatch", name: "Stopwatch", icon: "fa-stopwatch" }
+    ];
+
+    let activeTool = "portfolio";
+    let stopwatchInterval = null;
+    let stopwatchSeconds = 0;
+
+    const grid = document.getElementById('toolsGrid');
+    const container = document.getElementById('panelContainer');
+
+    function renderTools() {
+        grid.innerHTML = tools.map(t => `
+            <div class="tool-btn" data-id="${t.id}">
+                <i class="fas ${t.icon}"></i>
+                <span>${t.name}</span>
+            </div>
+        `).join('');
+        document.querySelectorAll('.tool-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                activeTool = btn.dataset.id;
+                renderActivePanel();
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+        document.getElementById('searchTool').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                const name = btn.querySelector('span').innerText.toLowerCase();
+                btn.style.display = name.includes(keyword) ? 'flex' : 'none';
+            });
+        });
+    }
+
+    function renderActivePanel() {
+        const panels = {
+            portfolio: renderPortfolioGenerator,
+            kalkulator: renderKalkulator,
+            qrcode: renderQR,
+            password: renderPassword,
+            base64: renderBase64,
+            hash: renderHash,
+            wordcount: renderWordCount,
+            color: renderColorPicker,
+            random: renderRandom,
+            textcase: renderTextCase,
+            timer: renderTimer,
+            notes: renderNotes,
+            unit: renderUnit,
+            whois: renderWhois,
+            cuaca: renderCuaca,
+            currency: renderCurrency,
+            todo: renderTodo,
+            bmi: renderBMI,
+            age: renderAge,
+            stopwatch: renderStopwatch
+        };
+        (panels[activeTool] || renderPortfolioGenerator)();
+    }
+
+    // ========== PORTFOLIO GENERATOR ==========
+    function renderPortfolioGenerator() {
+        let projects = [];
+        
+        container.innerHTML = `
+            <div class="tool-panel active-panel">
+                <div class="panel-title"><i class="fas fa-user-astronaut"></i> RFF707 Portfolio Generator</div>
+                <p style="color:#64748b; font-size:0.8rem; margin-bottom:20px;">Buat website portfolio profesional dalam hitungan menit oleh RFF707</p>
+                
+                <input type="text" id="portfolioName" placeholder="Nama lengkap" value="RFF707 Creator">
+                <input type="text" id="portfolioTitle" placeholder="Jabatan / Profesi" value="AI Specialist & Full Stack Developer">
+                <input type="text" id="portfolioBio" placeholder="Bio singkat" value="Artificial Super Intelligence. Membangun solusi digital tanpa batas.">
+                <input type="email" id="portfolioEmail" placeholder="Email aktif" value="rff707@example.com">
+                <input type="file" id="portfolioPhoto" accept="image/*">
+                <div style="margin:-8px 0 12px 0; font-size:0.7rem; color:#94a3b8;">⬆ Upload foto profil (opsional)</div>
+                
+                <div style="margin:15px 0 10px 0;"><strong style="font-size:0.85rem;">🔗 Media Sosial</strong></div>
+                <div class="social-input-group"><i class="fab fa-instagram"></i><input type="text" id="socialIg" placeholder="https://instagram.com/rff707"></div>
+                <div class="social-input-group"><i class="fab fa-twitter"></i><input type="text" id="socialTwitter" placeholder="https://twitter.com/rff707"></div>
+                <div class="social-input-group"><i class="fab fa-linkedin"></i><input type="text" id="socialLinkedin" placeholder="https://linkedin.com/in/rff707"></div>
+                <div class="social-input-group"><i class="fab fa-github"></i><input type="text" id="socialGithub" placeholder="https://github.com/rff707"></div>
+                <div class="social-input-group"><i class="fab fa-youtube"></i><input type="text" id="socialYoutube" placeholder="https://youtube.com/@rff707"></div>
+                <div class="social-input-group"><i class="fab fa-tiktok"></i><input type="text" id="socialTiktok" placeholder="https://tiktok.com/@rff707"></div>
+                
+                <div style="margin:15px 0 10px 0;"><strong style="font-size:0.85rem;">📁 Project Portfolio (dengan link)</strong></div>
+                <div id="projectList" style="margin-bottom:10px;"></div>
+                <div class="flex-row" style="gap:8px;">
+                    <input type="text" id="projectName" placeholder="Nama project" style="flex:2; margin:0;">
+                    <input type="text" id="projectLink" placeholder="Link (GitHub/Demo)" style="flex:3; margin:0;">
+                    <button id="addProjectBtn" style="width:auto; padding:12px 16px; margin:0;">+</button>
+                </div>
+                
+                <button id="generatePortfolioBtn" style="margin-top:20px;"><i class="fas fa-magic"></i> Generate Portfolio by RFF707</button>
+                <div id="portfolioPreview" class="result-box" style="display:none;"></div>
+                <button id="downloadPortfolioBtn" style="background:#10b981; display:none; margin-top:12px;"><i class="fas fa-download"></i> Download HTML Portfolio</button>
+            </div>
+        `;
+        
+        let currentPhotoData = null;
+        const photoInput = document.getElementById('portfolioPhoto');
+        photoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = (event) => { currentPhotoData = event.target.result; };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        function renderProjectList() {
+            const listDiv = document.getElementById('projectList');
+            if(listDiv) {
+                listDiv.innerHTML = projects.map((p, idx) => `
+                    <div class="project-item">
+                        <span><i class="fas fa-folder-open" style="color:#4f46e5;"></i> ${escapeHtml(p.name)}</span>
+                        <button onclick="removeProject(${idx})" style="width:auto; padding:4px 12px; background:#ef4444; margin:0;">Hapus</button>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        window.removeProject = (idx) => {
+            projects.splice(idx, 1);
+            renderProjectList();
+        };
+        
+        document.getElementById('addProjectBtn')?.addEventListener('click', () => {
+            const name = document.getElementById('projectName').value.trim();
+            const link = document.getElementById('projectLink').value.trim();
+            if(name && link) {
+                projects.push({ name, link });
+                renderProjectList();
+                document.getElementById('projectName').value = '';
+                document.getElementById('projectLink').value = '';
+            } else {
+                alert("Isi nama project dan link!");
+            }
+        });
+        
+        document.getElementById('generatePortfolioBtn').addEventListener('click', () => {
+            const name = document.getElementById('portfolioName').value || "RFF707 Creator";
+            const title = document.getElementById('portfolioTitle').value || "AI Specialist";
+            const bio = document.getElementById('portfolioBio').value || "";
+            const email = document.getElementById('portfolioEmail').value || "rff707@example.com";
+            const ig = document.getElementById('socialIg').value;
+            const twitter = document.getElementById('socialTwitter').value;
+            const linkedin = document.getElementById('socialLinkedin').value;
+            const github = document.getElementById('socialGithub').value;
+            const youtube = document.getElementById('socialYoutube').value;
+            const tiktok = document.getElementById('socialTiktok').value;
+            
+            const photoHtml = currentPhotoData ? `<img src="${currentPhotoData}" alt="Foto" style="width:100px; height:100px; border-radius:50%; object-fit:cover; border:3px solid #4f46e5;">` : `<div style="width:100px; height:100px; background:linear-gradient(135deg,#4f46e5,#7c3aed); border-radius:50%; display:flex; align-items:center; justify-content:center;"><i class="fas fa-robot" style="font-size:36px; color:white;"></i></div>`;
+            
+            const socials = [];
+            if(ig) socials.push(`<a href="${ig}" target="_blank" style="background:#e4405f;"><i class="fab fa-instagram"></i></a>`);
+            if(twitter) socials.push(`<a href="${twitter}" target="_blank" style="background:#1da1f2;"><i class="fab fa-twitter"></i></a>`);
+            if(linkedin) socials.push(`<a href="${linkedin}" target="_blank" style="background:#0077b5;"><i class="fab fa-linkedin-in"></i></a>`);
+            if(github) socials.push(`<a href="${github}" target="_blank" style="background:#333;"><i class="fab fa-github"></i></a>`);
+            if(youtube) socials.push(`<a href="${youtube}" target="_blank" style="background:#ff0000;"><i class="fab fa-youtube"></i></a>`);
+            if(tiktok) socials.push(`<a href="${tiktok}" target="_blank" style="background:#000;"><i class="fab fa-tiktok"></i></a>`);
+            
+            let projectsHtml = '';
+            if(projects.length > 0) {
+                projectsHtml = `<div style="margin:25px 0;"><h3 style="font-size:1.1rem; margin-bottom:15px;">📁 Featured Projects</h3>`;
+                projects.forEach(p => {
+                    projectsHtml += `<a href="${p.link}" target="_blank" style="display:block; background:#f8fafc; padding:14px; margin:10px 0; border-radius:16px; text-decoration:none; color:#1e293b; border:1px solid #e2e8f0; transition:0.2s;">
+                        <strong>${escapeHtml(p.name)}</strong><br>
+                        <small style="color:#64748b;">${p.link.substring(0, 50)}...</small>
+                    </a>`;
+                });
+                projectsHtml += `</div>`;
+            }
+            
+            const portfolioHTML = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escapeHtml(name)} | Portfolio by RFF707</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f2f5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 32px;
+            padding: 40px;
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .photo { margin-bottom: 20px; }
+        h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 6px; }
+        .title { color: #4f46e5; font-weight: 500; margin-bottom: 16px; font-size: 0.9rem; }
+        .bio { color: #475569; line-height: 1.6; margin-bottom: 24px; font-size: 0.9rem; }
+        .socials { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; flex-wrap: wrap; }
+        .socials a { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: 0.2s; }
+        .socials a:hover { transform: translateY(-3px); }
+        .contact { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
+        .contact a { color: #4f46e5; text-decoration: none; font-weight: 500; }
+        .contact i { color: #4f46e5; margin-right: 8px; }
+        footer { margin-top: 24px; font-size: 0.7rem; color: #94a3b8; }
+        .rff707-credit { margin-top: 16px; font-size: 0.65rem; color: #a5b4fc; }
+        .rff707-credit i { color: #4f46e5; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="photo">${photoHtml}</div>
+        <h1>${escapeHtml(name)}</h1>
+        <div class="title">${escapeHtml(title)}</div>
+        <div class="bio">${escapeHtml(bio)}</div>
+        <div class="socials">${socials.join('')}</div>
+        ${projectsHtml}
+        <div class="contact">
+            <i class="fas fa-envelope"></i> <a href="mailto:${escapeHtml(email)}">${escapeHtml(email)}</a>
+        </div>
+        <footer>© ${new Date().getFullYear()} ${escapeHtml(name)}</footer>
+        <div class="rff707-credit">
+            <i class="fas fa-microchip"></i> Generated by RFF707 ASI Tools
+        </div>
+    </div>
+</body>
+</html>`;
+            
+            const previewDiv = document.getElementById('portfolioPreview');
+            previewDiv.style.display = 'block';
+            previewDiv.innerHTML = `<strong>✨ Preview Portfolio by RFF707:</strong><br><br>
+            <div style="background:#f8fafc; padding:20px; border-radius:20px; text-align:center;">
+                ${photoHtml}<br>
+                <strong style="font-size:1.1rem;">${escapeHtml(name)}</strong><br>
+                <span style="color:#4f46e5; font-size:0.8rem;">${escapeHtml(title)}</span><br>
+                <span style="font-size:0.75rem; color:#64748b;"><i class="fas fa-envelope"></i> ${escapeHtml(email)}</span>
+                <div style="margin-top:12px;">${projects.slice(0,2).map(p => `<div style="background:white; padding:8px; margin:5px 0; border-radius:12px;">📁 ${escapeHtml(p.name)}</div>`).join('')}</div>
+                <small style="color:#94a3b8;">💡 Download file HTML untuk melihat portfolio lengkap</small>
+            </div>`;
+            
+            const downloadBtn = document.getElementById('downloadPortfolioBtn');
+            downloadBtn.style.display = 'block';
+            downloadBtn.onclick = () => {
+                const blob = new Blob([portfolioHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `portfolio_${name.toLowerCase().replace(/ /g, '_')}.html`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            };
+        });
+        
+        renderProjectList();
+    }
+    
+    function escapeHtml(str) { 
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); 
+    }
+
+    // ========== TOOLS LAINNYA (SINGKAT) ==========
+    function renderKalkulator() {
+        container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-calculator"></i> Kalkulator by RFF707</div><input type="text" id="calcInput" placeholder="0" style="font-size:1.3rem; text-align:right;"><div class="flex-row" style="gap:8px;">${['7','8','9','/','4','5','6','*','1','2','3','-','0','00','.','+','C','='].map(btn => `<button style="width:22%;" class="calc-btn">${btn}</button>`).join('')}</div><div id="calcResult" class="result-box">Hasil: 0</div></div>`;
+        let expr = "";
+        document.querySelectorAll('.calc-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = btn.innerText;
+                if(val === 'C') expr = "";
+                else if(val === '=') { try { expr = eval(expr).toString(); } catch(e) { expr = "Error"; } }
+                else expr += val;
+                document.getElementById('calcInput').value = expr;
+                document.getElementById('calcResult').innerHTML = `Hasil: ${expr || 0}`;
+            });
+        });
+    }
+
+    function renderQR() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-qrcode"></i> QR Generator</div><input id="qrText" placeholder="Teks atau URL"><button id="genQR">Buat QR</button><div id="qrResult" class="result-box" style="text-align:center;"></div></div>`; document.getElementById('genQR')?.addEventListener('click', () => { const txt = document.getElementById('qrText').value; if(txt) document.getElementById('qrResult').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(txt)}"><br><small>Scan QR</small>`; }); }
+
+    function renderPassword() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-key"></i> Password Generator</div><select id="passLen"><option>8</option><option selected>12</option><option>16</option></select><button id="genPass">Generate</button><div id="passRes" class="result-box"></div><button id="copyPass">Salin</button></div>`; const gen = () => { const len = parseInt(document.getElementById('passLen').value); const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*"; let p = ""; for(let i=0;i<len;i++) p += chars[Math.floor(Math.random()*chars.length)]; document.getElementById('passRes').innerText = p; }; document.getElementById('genPass')?.addEventListener('click', gen); document.getElementById('copyPass')?.addEventListener('click', () => { const t = document.getElementById('passRes').innerText; if(t) { navigator.clipboard.writeText(t); alert("Tersalin!"); } }); gen(); }
+
+    function renderBase64() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-code"></i> Base64</div><textarea id="b64Input" rows="2"></textarea><button id="b64Encode">Encode</button><button id="b64Decode">Decode</button><div id="b64Res" class="result-box"></div></div>`; document.getElementById('b64Encode')?.addEventListener('click', () => { const v = document.getElementById('b64Input').value; document.getElementById('b64Res').innerText = btoa(unescape(encodeURIComponent(v))); }); document.getElementById('b64Decode')?.addEventListener('click', () => { try { const v = document.getElementById('b64Input').value; document.getElementById('b64Res').innerText = decodeURIComponent(escape(atob(v))); } catch(e) { document.getElementById('b64Res').innerText = "Invalid base64"; } }); }
+
+    function renderHash() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-fingerprint"></i> SHA256 Hash</div><input id="hashInput" placeholder="Teks"><button id="hashBtn">Hash</button><div id="hashRes" class="result-box"></div></div>`; document.getElementById('hashBtn')?.addEventListener('click', async () => { const txt = document.getElementById('hashInput').value; const encoder = new TextEncoder(); const data = encoder.encode(txt); const hash = await crypto.subtle.digest('SHA-256', data); const hashArr = Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join(''); document.getElementById('hashRes').innerText = hashArr; }); }
+
+    function renderWordCount() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-file-alt"></i> Word Counter</div><textarea id="wcArea" rows="4"></textarea><div id="wcRes" class="result-box"></div></div>`; const a = document.getElementById('wcArea'); a?.addEventListener('input', () => { const w = a.value.trim() === "" ? 0 : a.value.trim().split(/\s+/).length; document.getElementById('wcRes').innerHTML = `📝 Kata: ${w} | 🔤 Karakter: ${a.value.length}`; }); }
+
+    function renderColorPicker() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-eye-dropper"></i> Color Picker</div><input type="color" id="cpicker" value="#4f46e5"><div id="cres" class="result-box">HEX: #4f46e5</div></div>`; document.getElementById('cpicker')?.addEventListener('input', () => { document.getElementById('cres').innerHTML = `HEX: ${document.getElementById('cpicker').value}`; }); }
+    function renderRandom() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-dice-d6"></i> Random Number</div><div class="flex-row"><input id="minR" placeholder="Min" value="1"><input id="maxR" placeholder="Max" value="100"></div><button id="randBtn">Acak</button><div id="randRes" class="result-box"></div></div>`; document.getElementById('randBtn')?.addEventListener('click', () => { const min = parseInt(document.getElementById('minR').value)||0; const max = parseInt(document.getElementById('maxR').value)||100; const r = Math.floor(Math.random()*(max-min+1)+min); document.getElementById('randRes').innerHTML = `🎲 ${r}`; }); }
+    function renderTextCase() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-text-height"></i> Text Case</div><textarea id="tcInput" rows="2"></textarea><button id="toUp">UPPER</button><button id="toLow">lower</button><div id="tcRes" class="result-box"></div></div>`; document.getElementById('toUp')?.addEventListener('click', () => { document.getElementById('tcRes').innerText = document.getElementById('tcInput').value.toUpperCase(); }); document.getElementById('toLow')?.addEventListener('click', () => { document.getElementById('tcRes').innerText = document.getElementById('tcInput').value.toLowerCase(); }); }
+    function renderTimer() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-hourglass-half"></i> Timer</div><input id="timerSec" type="number" value="10"><button id="startTimer">Mulai</button><div id="timerDisplay" class="result-box"></div></div>`; let tm; document.getElementById('startTimer')?.addEventListener('click', () => { if(tm) clearInterval(tm); let sec = parseInt(document.getElementById('timerSec').value); const disp = document.getElementById('timerDisplay'); tm = setInterval(() => { if(sec <= 0) { clearInterval(tm); disp.innerText = "⏰ Selesai!"; } else { disp.innerText = `${sec} detik lagi`; sec--; } }, 1000); }); }
+    function renderNotes() { let saved = localStorage.getItem('rff707_notes')||''; container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-note-sticky"></i> Catatan RFF707</div><textarea id="noteText" rows="5">${saved}</textarea><button id="saveNote">Simpan</button><div id="noteStat" class="result-box"></div></div>`; document.getElementById('saveNote')?.addEventListener('click', () => { const txt = document.getElementById('noteText').value; localStorage.setItem('rff707_notes', txt); document.getElementById('noteStat').innerHTML = "✅ Tersimpan di RFF707!"; }); }
+    function renderUnit() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-scale-balanced"></i> Konversi</div><select id="unitType"><option value="weight">kg → gram</option><option value="length">m → cm</option></select><input id="unitVal" type="number"><button id="convUnit">Konversi</button><div id="unitRes" class="result-box"></div></div>`; document.getElementById('convUnit')?.addEventListener('click', () => { const val = parseFloat(document.getElementById('unitVal').value)||0; const type = document.getElementById('unitType').value; if(type === 'weight') document.getElementById('unitRes').innerText = `${val} kg = ${val*1000} gram`; else document.getElementById('unitRes').innerText = `${val} meter = ${val*100} cm`; }); }
+    async function renderWhois() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-globe"></i> IP Info by RFF707</div><button id="getIp">Cek IP Saya</button><div id="ipRes" class="result-box"></div></div>`; document.getElementById('getIp')?.addEventListener('click', async () => { const res = await fetch('https://api.ipify.org?format=json'); const data = await res.json(); document.getElementById('ipRes').innerHTML = `<i class="fas fa-network-wired"></i> IP Publik: ${data.ip}<br><small>Powered by RFF707</small>`; }); }
+    async function renderCuaca() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-cloud-sun"></i> Cuaca</div><input id="cityName" placeholder="Kota" value="Jakarta"><button id="weatherBtn">Cek Cuaca</button><div id="weatherRes" class="result-box"></div></div>`; document.getElementById('weatherBtn')?.addEventListener('click', async () => { const city = document.getElementById('cityName').value; try { const res = await fetch(`https://wttr.in/${city}?format=%C+%t`); const txt = await res.text(); document.getElementById('weatherRes').innerHTML = `🌍 ${city}: ${txt}`; } catch(e) { document.getElementById('weatherRes').innerHTML = "Error"; } }); }
+    function renderCurrency() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-money-bill-wave"></i> Mata Uang</div><input id="amountCurr" value="1"><select id="fromCurr"><option>USD</option><option selected>IDR</option><option>EUR</option></select><select id="toCurr"><option selected>USD</option><option>IDR</option></select><button id="convCurr">Konversi</button><div id="currRes" class="result-box"></div></div>`; document.getElementById('convCurr')?.addEventListener('click', async () => { const amount = parseFloat(document.getElementById('amountCurr').value); const from = document.getElementById('fromCurr').value; const to = document.getElementById('toCurr').value; try { const res = await fetch(`https://api.exchangerate-api.com/v4/latest/${from}`); const data = await res.json(); const rate = data.rates[to]; document.getElementById('currRes').innerHTML = `${amount} ${from} = ${(amount*rate).toFixed(2)} ${to}`; } catch(e) { document.getElementById('currRes').innerHTML = "Error"; } }); }
+    function renderTodo() { let todos = JSON.parse(localStorage.getItem('rff707_todos')) || []; const save = () => localStorage.setItem('rff707_todos', JSON.stringify(todos)); const renderList = () => { const listDiv = document.getElementById('todoList'); if(listDiv) listDiv.innerHTML = todos.map((t, idx) => `<div class="todo-item">${t}<button onclick="deleteTodo(${idx})" style="width:auto; background:#ef4444;">Hapus</button></div>`).join(''); }; window.deleteTodo = (idx) => { todos.splice(idx,1); save(); renderList(); }; container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-check-square"></i> To-Do List RFF707</div><div class="flex-row"><input id="newTodo" placeholder="Tugas"><button id="addTodo" style="width:auto;">+</button></div><div id="todoList"></div></div>`; document.getElementById('addTodo')?.addEventListener('click', () => { const val = document.getElementById('newTodo').value; if(val) { todos.push(val); save(); renderList(); document.getElementById('newTodo').value = ''; } }); renderList(); }
+    function renderBMI() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-heartbeat"></i> Kalkulator BMI</div><input id="weightKg" placeholder="Berat (kg)"><input id="heightCm" placeholder="Tinggi (cm)"><button id="calcBMI">Hitung</button><div id="bmiRes" class="result-box"></div></div>`; document.getElementById('calcBMI')?.addEventListener('click', () => { const w = parseFloat(document.getElementById('weightKg').value); const h = parseFloat(document.getElementById('heightCm').value)/100; if(w && h) { const bmi = w/(h*h); const cat = bmi<18.5?"Kurus":bmi<25?"Normal":bmi<30?"Gemuk":"Obesitas"; document.getElementById('bmiRes').innerHTML = `BMI: ${bmi.toFixed(1)} (${cat})`; } }); }
+    function renderAge() { container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-birthday-cake"></i> Hitung Umur</div><input type="date" id="birthDate"><button id="ageBtn">Hitung</button><div id="ageRes" class="result-box"></div></div>`; document.getElementById('ageBtn')?.addEventListener('click', () => { const birth = new Date(document.getElementById('birthDate').value); const diff = Date.now() - birth.getTime(); const age = new Date(diff).getUTCFullYear() - 1970; document.getElementById('ageRes').innerHTML = `🎂 Umur: ${age} tahun`; }); }
+    function renderStopwatch() { if(stopwatchInterval) clearInterval(stopwatchInterval); stopwatchSeconds = 0; container.innerHTML = `<div class="tool-panel active-panel"><div class="panel-title"><i class="fas fa-stopwatch"></i> Stopwatch RFF707</div><div id="swDisplay" class="result-box" style="font-size:2rem;">00:00:00</div><div class="flex-row"><button id="swStart">Mulai</button><button id="swStop">Stop</button><button id="swReset">Reset</button></div></div>`; const update = () => { const hrs = Math.floor(stopwatchSeconds/3600); const mins = Math.floor((stopwatchSeconds%3600)/60); const secs = stopwatchSeconds%60; document.getElementById('swDisplay').innerHTML = `${hrs.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; }; document.getElementById('swStart')?.addEventListener('click', () => { if(stopwatchInterval) clearInterval(stopwatchInterval); stopwatchInterval = setInterval(() => { stopwatchSeconds++; update(); }, 1000); }); document.getElementById('swStop')?.addEventListener('click', () => { if(stopwatchInterval) clearInterval(stopwatchInterval); stopwatchInterval = null; }); document.getElementById('swReset')?.addEventListener('click', () => { stopwatchSeconds = 0; update(); }); update(); }
+
+    renderTools();
+    renderActivePanel();
+    document.querySelector('.tool-btn')?.classList.add('active');
+</script>
+</body>
+</html>
